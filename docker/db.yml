@@ -1,0 +1,29 @@
+version: '3.8'
+services:
+
+  jwt-auth-example-db:
+    image: postgres:14
+    volumes:
+      - ../db:/var/lib/postgresql/data
+      - ../scripts/sql:/docker-entrypoint-initdb.d
+    networks:
+      - jwt_auth_example_network
+    ports:
+      - "25432:5432"
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: jwt-auth-example
+      # use with postgresql 14 (default is scram-sha256 which is not supported by old psql)
+      TZ: "Asia/Ho_Chi_Minh"
+      PGTZ: "Asia/Ho_Chi_Minh"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1G
+          
+networks:
+  jwt_auth_example_network:
+    driver: overlay
+    attachable: true
